@@ -30,6 +30,8 @@ import net.rubyeye.xmemcached.MemcachedClient;
 @RestController
 @RequestMapping("/")
 public class  ValidatorController {	
+	/*** indicate current version of this micro service ***/
+	public final String cVersion = "1.0";
 	
 	@Autowired
 	PolicyController policyController;
@@ -70,6 +72,7 @@ public class  ValidatorController {
 		policyValidationR.setUserID(userid);
 		policyValidationR.setUserLevel(userlv);
 		policyValidationR.setGoodsSKU(sku);
+		policyValidationR.setVersion(cVersion);
 		/*** default is true, that is default is no limitation ***/
 		policyValidationR.setIsAllowed(true);
 		
