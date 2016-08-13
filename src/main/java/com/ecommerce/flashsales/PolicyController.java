@@ -33,7 +33,7 @@ import net.rubyeye.xmemcached.exception.MemcachedException;
 public class  PolicyController {	
     @Autowired
     private MemcachedClient memcachedClient;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger("SystemLog");
     private final String allItemsKey = "xAllPoliciesKey";
     private final String xNameSpace = "PlicyController";
     /***
