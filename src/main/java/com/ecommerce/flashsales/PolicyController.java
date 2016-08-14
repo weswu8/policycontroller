@@ -36,6 +36,7 @@ public class  PolicyController {
     private final Logger logger = LoggerFactory.getLogger("SystemLog");
     private final String allItemsKey = "xAllPoliciesKey";
     private final String xNameSpace = "PlicyController";
+    
     /***
      * Generate the md5 value for the pair of GoodsSku and Inventory no.
      * @param badguy
