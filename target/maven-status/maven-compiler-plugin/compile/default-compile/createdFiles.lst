@@ -1,13 +1,9 @@
-com/ecommerce/flashsales/AddGoodsR.class
 com/ecommerce/flashsales/CurrentStep.class
 com/ecommerce/flashsales/UserController.class
 com/ecommerce/flashsales/FlashSalesAccessLogger$FlashSalesAccessLog.class
 com/ecommerce/flashsales/PolicyController.class
 com/ecommerce/flashsales/RateLimiter.class
 com/ecommerce/flashsales/PolicyControllerApplication.class
-com/ecommerce/flashsales/ResourceNotFoundException.class
-com/ecommerce/flashsales/ClientErrorHandler.class
-com/ecommerce/flashsales/UnexpectedHttpException.class
 com/ecommerce/flashsales/PolicyValidationR.class
 com/ecommerce/flashsales/PolicySetter.class
 com/ecommerce/flashsales/ValidatorController.class

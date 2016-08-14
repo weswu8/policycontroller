@@ -42,49 +42,9 @@ public class  ValidatorController {
 	UserController userController;
     private final Logger logger = LoggerFactory.getLogger("SystemLog");
 	FlashSalesAccessLogger fsAccessLogger = new FlashSalesAccessLogger();
-	@Value("${shoppingcart.url}")
-	private String shoppingcartBaseUrl;
 	/*** rate limiter setting ***/
     @Value("${ratelimiter.consumeCount}")
 	public double consumeCount;
-    
-    /***
-     * customize the HTTP connection configuration.
-     * @return
-     */
-    @Autowired
-    public ClientHttpRequestFactory getClientHttpRequestFactory() {
-        /*** set the long time out period ***/
-    	int timeout = 60000;
-        HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
-        clientHttpRequestFactory.setConnectTimeout(timeout);
-        return clientHttpRequestFactory;
-    }
-    /***
-     * get the user's goods from shopping cart.
-     * @param restTemplate
-     * @param userid
-     * @param sku
-     * @return {false,true},0-index: Exception, 1-index:validation result, 2-index:is throttled
-     */
-    public AddGoodsR getGoodsFromCart(String userid, String sku){
-    	RestTemplate restTemplate = new RestTemplate(getClientHttpRequestFactory());
-        restTemplate.setErrorHandler(new ClientErrorHandler());
-    	AddGoodsR addGoodsR = null;
-		try {
-			Map<String, String> params = new HashMap<String, String>();
-			params.put("userid", userid);
-			params.put("sku", sku);
-			addGoodsR = restTemplate.getForObject(shoppingcartBaseUrl+"/userid/{userid}/sku/{sku}",AddGoodsR.class,params);
-		} catch (ResourceNotFoundException nEx) {
-        	logger.error(nEx.toString());
-		} catch (UnexpectedHttpException uEx){
-			logger.error(uEx.toString());
-		} catch (ResourceAccessException rEx){
-			logger.error(rEx.toString());
-		}
-		return addGoodsR;
-    }
     
     /***
 	 * do the validation
@@ -100,7 +60,6 @@ public class  ValidatorController {
 		PolicyValidationR policyValidationR = new PolicyValidationR();		
 		UserOrders userOrders = new UserOrders();
 		PolicySetter policySetter = new PolicySetter();
-		AddGoodsR addGoodsR = new AddGoodsR();
 		long startTime = System.currentTimeMillis();
 		
 		/*** generate request parameters for log */
@@ -132,17 +91,8 @@ public class  ValidatorController {
 		/*** get order history for the user and sku ***/
 		userOrders = userController.getUserOrders(policyValidationR.getUserID(), policyValidationR.getGoodsSKU());
 		
-		/*** get the goods quantity from the user's shopping cart ***/
-		addGoodsR = getGoodsFromCart(userid, sku);
-		if (addGoodsR.getIsThrottled() == true){
-			policyValidationR.setIsAllowed(false);
-			policyValidationR.setIsThrottled(true);
-			long endTime = System.currentTimeMillis();
-			fsAccessLogger.doAccessLog(httpRequest, httpResponse, policyValidationR.getSessionID(), CurrentStep.SHOPPINGCART.msgBody(), paramsJSON.toString(), endTime-startTime, policyValidationR);
-			return policyValidationR;
-		}
 		/*** update the user order quantity ***/
-		policyValidationR.setOrderQuantity(userOrders.getOrderQuantity() + addGoodsR.goodsQuantity + quantity);
+		policyValidationR.setOrderQuantity(userOrders.getOrderQuantity() + quantity);
 				
 		/*** get the policy setting for the sku ***/
 		policySetter = policyController.getPolicy(policyValidationR.getGoodsSKU());
@@ -151,6 +101,9 @@ public class  ValidatorController {
 		if (policySetter.getGoodsSKU() != null){
 			if (policyValidationR.getUserLevel() < policySetter.getUserLevel() || policyValidationR.getOrderQuantity() > policySetter.getQuantityLimit()) {
 					policyValidationR.setIsAllowed(false);
+			/*** this user pass,fill the quantity limitation, this parameter will be used in shopping cart service ***/
+			}else{
+				policyValidationR.setQuantityLimit(policySetter.getQuantityLimit());
 			}
 		}
 		
