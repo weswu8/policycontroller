@@ -40,7 +40,7 @@ public class  ValidatorController {
 	PolicyController policyController;
 	@Autowired
 	UserController userController;
-    private final Logger logger = LoggerFactory.getLogger("SystemLog");
+    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 	FlashSalesAccessLogger fsAccessLogger = new FlashSalesAccessLogger();
 	/*** rate limiter setting ***/
     @Value("${ratelimiter.consumeCount}")
