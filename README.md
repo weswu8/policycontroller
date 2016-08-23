@@ -37,7 +37,19 @@ System Architecture
 
 Service API
 ====
-To-do
+|Name |Path | Method  |  Request Body   |  Response Body  |
+|-----|-----|---------|-----------------|-----------------|
+|doPolicyValidation|/validate/sid/{sid}}/userid/{userid}}/userlv/{userlv}}/sku/{sku}/quantity/{qty}|GET| None |{"sessionID":"sid00001","userID":"FS000001","goodsSKU":"QT3456","userLevel":5,"orderQuantity":1,"isAllowed":true,"isThrottled":false,"version":"1.0"}|
+|addPolicy|/policy/add | POST | {"goodsSKU":"SKU0001","userLevel":5,"quantityLimit":1}|{"goodsSKU":"SKU0001","userLevel":5,"quantityLimit":1}|
+|addUserOrders|/user/add | POST | {"userID":"UID0000000001","goodsSKU":"SKU0001","userLevel":5,"orderQuantity":1,"isAllowed":false}|{"userID":"UID0000000002","goodsSKU":"SKU0007","userLevel":5,"orderQuantity":1}|
+|findAllItems-Policies|/policy/all | GET | None | [{"goodsSKU":"SKU0001","userLevel":3,"quantityLimit"}]|
+|findAllItems-UserOrders|/user/all | GET | None | [{"userID":"FS00000001","goodsSKU":"QT3456","user}]|
+|getPolicy|/policy/sku/{sku}| GET| None | {"goodsSKU":"SKU0001","userLevel":5,"quantityLimit":2} |
+|getUserOrders|/user/userid/{uid}/sku/{sku}| GET|None|{"userID":"UID0000000001","goodsSKU":"SKU0001","userLevel":5,"orderQuantity":1}|
+|removePolicy|/policy/delete/sku/{sku}|DELETE| None |{"goodsSKU":null,"userLevel":0,"quantityLimit":0}|
+|removeUserOrders|/user/delete/userid/{uid}/sku/{sku}}|DELETE| None |{"goodsSKU":null,"userLevel":0,"quantityLimit":0}|
+|updatePolicy|/policy/update|PUT|{"goodsSKU":"SKU0001","userLevel":5,"quantityLimit":2}|{"goodsSKU":"SKU0001","userLevel":5,"quantityLimit":2}|
+|updateUserOrders|/user/update|PUT|{"userID":"UID0000000001","goodsSKU":"SKU0001","userLevel":5,"orderQuantity":2}|{"userID":"UID0000000001","goodsSKU":"SKU0001","userLevel":5,"orderQuantity":2}|
 
 Performance
 ====
